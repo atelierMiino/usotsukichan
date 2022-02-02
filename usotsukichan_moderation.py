@@ -1,14 +1,12 @@
 from discord.ext import commands
 import usotsukichan_init
-# Guild member joining and leaving reactions
-# Chat purging
-# Chat Monitoring / Word Blacklisting, URL Blacklisting
 
 class usomod(commands.Cog):
     def __init__(self, usobot):
         self.usobot = usobot
-
-
+    # Guild member joining and leaving reactions
+    # Chat purging
+    # Chat Monitoring / Word Blacklisting, URL Blacklisting
 
 class usolog(commands.Cog):
     logconf_error_response = '(Syntax: !logconf ON/OFF Channel_ID)'
@@ -77,6 +75,9 @@ class usolog(commands.Cog):
             )
             await self.push_entry(edit_entry)
 
+    # log users coming / going
+
+    # configure logging
     @commands.command(name='logconf')
     async def logging_config(self, ctx, status, channel_id):
         if status == 'on' or status == 'ON' or status == 'On' or status == 'yes' or status == 'YES' or status == 'Yes' or status == 'y' or status == 'Y':

@@ -4,8 +4,12 @@ import json
 from types import SimpleNamespace
 
 import usotsukichan_init
-# bot rolling die feature
-# Inspirational hitler quotes disguised as modern celebrity quotes
+
+class mail():
+    def __init__(self, company, tracking_number):
+        self.company = company
+        self.tracking_number = tracking_number
+        self.user_id = user_id
 
 class usocommands(commands.Cog):
     roll_error_response = 'I couldn\'t roll those numbers. Please list rolls in NdN format >__<\'\' \n(Syntax: {}roll NdN NdN NdN ...)'.format(usotsukichan_init.bot_command_prefix)
@@ -102,7 +106,7 @@ class usocommands(commands.Cog):
 
     # inspirtational quotes
     @commands.command()
-    async def inspiration(self, ctx):
+    async def quote(self, ctx):
         file = open('quotes.json')
         data = json.load(file, object_hook = lambda d: SimpleNamespace(**d))
         rint = random.randint(0, 36)
@@ -110,6 +114,21 @@ class usocommands(commands.Cog):
         if data.Compilation[rint].Works != 'Null':
             phrase += ' *Known for {}*'.format(data.Compilation[rint].Works)
         await ctx.channel.send(phrase)
+
+class usomailcommands(commands.Cog):
+    def __init__(self, usobot):
+        self.usobot = usobot
+
+    # track package
+    # untrack package
+
+class usostonks(commands.Cog):
+    def __init__(self, usobot):
+        self.usobot = usobot
+
+    # list stonks detail
+    # watch stonks detail (every hour)
+    # good morning stonks notif / good night stonks notif
 
 class amychancommands(commands.Cog):
     def __init__(self, usobot):
@@ -176,4 +195,5 @@ class amychancommands(commands.Cog):
 
 def setup(bot: commands.Bot):
     bot.add_cog(usocommands(bot))
+    bot.add_cog(usomailcommands(bot))
     bot.add_cog(amychancommands(bot))
