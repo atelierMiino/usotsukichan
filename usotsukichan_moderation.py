@@ -4,7 +4,6 @@ import usotsukichan_init
 class usomod(commands.Cog):
     def __init__(self, usobot):
         self.usobot = usobot
-    # Guild member joining and leaving reactions
     # Chat purging
     # Chat Monitoring / Word Blacklisting, URL Blacklisting
 
@@ -76,6 +75,17 @@ class usolog(commands.Cog):
             await self.push_entry(edit_entry)
 
     # log users coming / going
+    @commands.Cog.listener()
+    async def on_member_join(self, message):
+        if message.author.id != self.usobot.user.id:
+            await message.channel.send('W-Welcome to {}, {}... you bastard!!', message.guild.id, message.author.id)
+        else:
+            await message.channel.send('H-hewoo. I\'m new here... my name is {}. You can see my commands @ {}', self.usobot.user.id, usotsukichan_init.CMD_DOCUMENTATION_WEBSITE)
+
+    @commands.Cog.listener()
+    async def on_member_remove(self, message):
+        if message.author.id != self.usobot.user.id:
+            await message.channel.send('CYA {}... you bastard!!',message.author.id)
 
     # configure logging
     @commands.command(name='logconf')
