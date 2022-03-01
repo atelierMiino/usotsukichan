@@ -10,8 +10,8 @@ Usotsuki chan is good at just being herself. For utils, see
 ''' + CMD_DOCUMENTATION_WEBSITE + '.'
 
 # misc VARIABLES
-raikohex_id = 183635843867607050
+raikohex_id = 0 # Add Number here
 
 # user-toggled VARIABLES
 logging_true = False
-logging_channel = 0 # 935710633507311618
+logging_channel = 0 # # Add Number here
