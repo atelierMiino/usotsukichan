@@ -1,3 +1,4 @@
+# main usotsukichan file. used to load and unload cogs based on configuration
 import discord
 from discord.ext import commands
 # usotsukichan dependencies
@@ -11,6 +12,8 @@ bot_intents = discord.Intents(  messages=True,
 usobot = commands.Bot(  command_prefix=usotsukichan_init.bot_command_prefix,
                         description=usotsukichan_init.bot_description,
                         intents=bot_intents)
+
+usobot.load_extension('usotsukichan_configuration')
 
 usobot.load_extension('usotsukichan_commands')
 usobot.load_extension('usotsukichan_commands_voice')
