@@ -14,4 +14,4 @@ raikohex_id = 0 # Add Number here
 
 # user-toggled VARIABLES
 logging_true = False
-logging_channel = 0 # # Add Number here
+logging_channel = 0 # Add Number here

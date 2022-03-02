@@ -5,29 +5,12 @@ from types import SimpleNamespace
 
 import usotsukichan_init
 
-class mail():
-    def __init__(self, company, tracking_number):
-        self.company = company
-        self.tracking_number = tracking_number
-        self.user_id = user_id
-
 class usocommands(commands.Cog):
     roll_error_response = 'I couldn\'t roll those numbers. Please list rolls in NdN format >__<\'\' \n(Syntax: {}roll NdN NdN NdN ...)'.format(usotsukichan_init.bot_command_prefix)
     _8ball_error_response = 'W-what did you want to ask the 8ball? @__@ \n(Syntax: {}8ball <question>)'.format(usotsukichan_init.bot_command_prefix)
 
-    def __init__(self, usobot):
-        self.usobot = usobot
-        self._last_member = None
-
-    # bot on_ready
-    @commands.Cog.listener()
-    async def on_ready(self):
-        print('Bot: {} is now Online.'.format(self.usobot.user))
-
-    # bot on_disconnect
-    @commands.Cog.listener()
-    async def on_disconnect(self):
-        print('Bot: {} is now Offline.'.format(self.usobot.user))
+    def __init__(self, bot):
+        self.bot = bot
 
     # roll NdN NdN NdN ...
     @commands.command()
@@ -116,23 +99,23 @@ class usocommands(commands.Cog):
         await ctx.channel.send(phrase)
 
 class usomailcommands(commands.Cog):
-    def __init__(self, usobot):
-        self.usobot = usobot
+    def __init__(self, bot):
+        self.bot = bot
 
     # track package
     # untrack package
 
 class usostonks(commands.Cog):
-    def __init__(self, usobot):
-        self.usobot = usobot
+    def __init__(self, bot):
+        self.bot = bot
 
     # list stonks detail
     # watch stonks detail (every hour)
     # good morning stonks notif / good night stonks notif
 
 class amychancommands(commands.Cog):
-    def __init__(self, usobot):
-        self.usobot = usobot
+    def __init__(self, bot):
+        self.bot = bot
         self._last_member = None
 
     # bully and tease raikoh
@@ -162,7 +145,7 @@ class amychancommands(commands.Cog):
         # if a character is g, continue if g or u
         # if a character is u, continue if u or h
         # if at any point a character breaks, return to case g
-        if ctx.author.id == self.usobot.user.id:
+        if ctx.author.id == self.bot.user.id:
             return
         state = 0
         for c in ctx.content:
@@ -195,5 +178,4 @@ class amychancommands(commands.Cog):
 
 def setup(bot: commands.Bot):
     bot.add_cog(usocommands(bot))
-    bot.add_cog(usomailcommands(bot))
     bot.add_cog(amychancommands(bot))

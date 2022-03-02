@@ -1,27 +1,27 @@
 from discord.ext import commands
 import usotsukichan_init
 
-class usomod(commands.Cog):
-    def __init__(self, usobot):
-        self.usobot = usobot
+class moderation(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
     # Chat purging
     # Chat Monitoring / Word Blacklisting, URL Blacklisting
 
-class usolog(commands.Cog):
+class message_log(commands.Cog):
     logconf_error_response = '(Syntax: !logconf ON/OFF Channel_ID)'
 
-    def __init__(self, usobot):
-        self.usobot = usobot
+    def __init__(self, bot):
+        self.bot = bot
 
     # pushes log entry to logging get_channel
     async def push_entry(self, entry):
-        await self.usobot.get_channel(usotsukichan_init.logging_channel).send(entry)
+        await self.bot.get_channel(usotsukichan_init.logging_channel).send(entry)
 
     # log new messages
     @commands.Cog.listener()
     async def on_message(self, message):
         # if logging data is on, log data into guild channel
-        if message.author.id == self.usobot.user.id:
+        if message.author.id == self.bot.user.id:
             return
         if (usotsukichan_init.logging_true):
             dt = message.created_at
@@ -74,33 +74,23 @@ class usolog(commands.Cog):
             )
             await self.push_entry(edit_entry)
 
+class user_log(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
     # log users coming / going
     @commands.Cog.listener()
     async def on_member_join(self, message):
-        if message.author.id != self.usobot.user.id:
+        if message.author.id != self..user.id:
             await message.channel.send('W-Welcome to {}, {}... you bastard!!', message.guild.id, message.author.id)
         else:
-            await message.channel.send('H-hewoo. I\'m new here... my name is {}. You can see my commands @ {}', self.usobot.user.id, usotsukichan_init.CMD_DOCUMENTATION_WEBSITE)
+            await message.channel.send('H-hewoo. I\'m new here... my name is {}. You can see my commands @ {}', self.bot.user.id, usotsukichan_init.CMD_DOCUMENTATION_WEBSITE)
 
     @commands.Cog.listener()
     async def on_member_remove(self, message):
-        if message.author.id != self.usobot.user.id:
+        if message.author.id != self.bot.user.id:
             await message.channel.send('CYA {}... you bastard!!',message.author.id)
 
-    # configure logging
-    @commands.command(name='logconf')
-    async def logging_config(self, ctx, status, channel_id):
-        if status == 'on' or status == 'ON' or status == 'On' or status == 'yes' or status == 'YES' or status == 'Yes' or status == 'y' or status == 'Y':
-            usotsukichan_init.logging_true = True
-            try:
-                logging_channel = channel_id
-            except:
-                await ctx.channel.send('Baka!! No channel ID was given. How am I supposed to know what channel I\'m supposed to log to?\n {}'.format(logconf_error_response))
-        elif status == 'off' or status == 'OFF' or status == 'Off' or status == 'no' or status == 'NO' or status == 'No' or status == 'n' or status == 'N':
-            usotsukichan_init.logging_true = False
-        else:
-            await ctx.channel.send('I-I guess you don\'t know how to use this command, right? =w=\'\'\n {}'.format(logconf_error_response))
-
 def setup(bot: commands.Bot):
-    bot.add_cog(usomod(bot))
-    bot.add_cog(usolog(bot))
+    bot.add_cog(moderation(bot))
+    bot.add_cog(message_log(bot))
+    bot.add_cog(user_log(bot))
