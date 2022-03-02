@@ -1,4 +1,5 @@
 # this file is dedicated to user moderation. This information ideally should only be available to server moderators and admins
+
 from discord.ext import commands
 import usotsukichan_init
 
@@ -9,8 +10,6 @@ class moderation(commands.Cog):
     # Chat Monitoring / Word Blacklisting, URL Blacklisting
 
 class message_log(commands.Cog):
-    logconf_error_response = '(Syntax: !logconf ON/OFF Channel_ID)'
-
     def __init__(self, bot):
         self.bot = bot
 

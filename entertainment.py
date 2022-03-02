@@ -1,3 +1,5 @@
+# mostly random user-interaction based commands
+
 from discord.ext import commands
 import random
 import json

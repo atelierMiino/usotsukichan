@@ -1,4 +1,7 @@
+# truly random commands
+
 from discord.ext import commands
+import random
 
 class amychancommands(commands.Cog):
 

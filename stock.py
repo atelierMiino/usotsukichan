@@ -1,3 +1,5 @@
+# used to track stocks
+
 from discord.ext import commands
 
 class stock(commands.Cog):

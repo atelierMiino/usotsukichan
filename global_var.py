@@ -1,4 +1,5 @@
-# GLOBAL VARIABLES
+# GLOBAL VARIABLES might become a json in the future
+
 token = 'OTM1Njk1MTcwNzk4NzUxNzk0.YfCYCQ.rzL6VP246KLo7AK8AmHVTaMQfU4'
 cmd_link = ''
 
@@ -20,7 +21,10 @@ is_stock = False
 is_mail = False
 
 # user-defined VARIABLES
-log_channel = 0 # Add Number here
+log_channel = 0
+mail_channel = 0
+stock_channel = 0
+bot_commands_channel = 0
 
 hello = ''
 introduce = ''
