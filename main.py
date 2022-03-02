@@ -12,12 +12,13 @@ bot_intents = discord.Intents(  messages=True,
                                 reactions=True,
                                 guilds=True,
                                 members=True)
-usobot = commands.Bot(  command_prefix=usotsukichan_init.bot_command_prefix,
-                        description=usotsukichan_init.bot_description,
+bot = commands.Bot(  command_prefix=global_var.cmd_pre,
+                        description=global_var.description,
                         intents=bot_intents)
-# barebones component
-usobot.load_extension('base')
-usobot.run(usotsukichan_init.DISCORD_BOT_TOKEN)
+
+# run with barebones component
+bot.load_extension('base')
+bot.run(global_var.token)
 
 # configure extensions
 
@@ -27,13 +28,18 @@ usobot.run(usotsukichan_init.DISCORD_BOT_TOKEN)
 # "X commands are <ON/OFF>. Toggle <OFF/ON?"
 # if toggle true & command on, then toggle off, else toggle on
 # if toggle on true, toggle specific commands
-usobot.load_extension('mod')
+if global_var.is_mod or global_var.is_log_msg or global_var.is_log_user:
+    bot.load_extension('mod')
 # entertainment
-usobot.load_extension('entertainment')
+if global_var.is_entertainment:
+    bot.load_extension('entertainment')
 # voicechat
-usobot.load_extension('voice')
+if global_var.is_v_chat:
+    bot.load_extension('voice')
 # stonks
-
+if global_var.is_stock:
+    bot.load_extension('stock')
 # mail
-usobot.load_extension('mail')
+if global_var.is_mail:
+    bot.load_extension('mail')
 # misc

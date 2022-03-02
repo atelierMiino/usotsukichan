@@ -3,11 +3,11 @@ import random
 import json
 from types import SimpleNamespace
 
-import usotsukichan_init
+import global_var
 
-class usocommands(commands.Cog):
-    roll_error_response = 'I couldn\'t roll those numbers. Please list rolls in NdN format >__<\'\' \n(Syntax: {}roll NdN NdN NdN ...)'.format(usotsukichan_init.bot_command_prefix)
-    _8ball_error_response = 'W-what did you want to ask the 8ball? @__@ \n(Syntax: {}8ball <question>)'.format(usotsukichan_init.bot_command_prefix)
+class entertainment(commands.Cog):
+    roll_error_response = '(Syntax: {}roll NdN NdN NdN ...)'.format(global_var.cmd_pre)
+    _8ball_error_response = '(Syntax: {}8ball <question>)'.format(global_var.cmd_pre)
 
     def __init__(self, bot):
         self.bot = bot
@@ -97,84 +97,6 @@ class usocommands(commands.Cog):
         if data.Compilation[rint].Works != 'Null':
             phrase += ' *Known for {}*'.format(data.Compilation[rint].Works)
         await ctx.channel.send(phrase)
-
-class usomailcommands(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-
-    # track package
-    # untrack package
-
-class usostonks(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-
-    # list stonks detail
-    # watch stonks detail (every hour)
-    # good morning stonks notif / good night stonks notif
-
-class amychancommands(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-        self._last_member = None
-
-    # bully and tease raikoh
-    async def bully_raikoh(self, ctx):
-        # listen for raikoh's discord ID
-        if ctx.author.id == usotsukichan_init.raikohex_id:
-        # 5% chance to reply with bully
-            bully_meter = random.randint(0, 19)
-            if bully_meter == 19:
-                mean_phrase = [
-                    '{thinking_emoji}'.format('\U0001F914'),
-                    'Of course you would say that..',
-                    'just like the simulations..',
-                    'oh here we go again xd',
-                    'toxic... and mean!!',
-                    'sounds homoerotic',
-                    'typical raikoh',
-                    'cute..',
-                    'Hi',
-                    '?'
-                ]
-                chaos_meter = random.randint(0, 9)
-                ctx.reply(mean_phrase[chaos_meter])
-
-    # guhhh responder
-    async def guhhh(self, ctx):
-        # if a character is g, continue if g or u
-        # if a character is u, continue if u or h
-        # if at any point a character breaks, return to case g
-        if ctx.author.id == self.bot.user.id:
-            return
-        state = 0
-        for c in ctx.content:
-            match state:
-                case 0:
-                    if c == 'g':
-                        state = 1
-                case 1:
-                    if c == 'g':
-                        pass
-                    elif c == 'u':
-                        state = 2
-                    else:
-                        state = 0
-                case 2:
-                    if c == 'u':
-                        pass
-                    elif c == 'h':
-                        # if message contains guhhh..., guhhh back
-                        await ctx.channel.send('guhhh')
-                        return
-                    else:
-                        pass
-
-    # message events
-    @commands.Cog.listener()
-    async def on_message(self, message):
-        await self.bully_raikoh(message)
-        await self.guhhh(message)
 
 def setup(bot: commands.Bot):
     bot.add_cog(usocommands(bot))

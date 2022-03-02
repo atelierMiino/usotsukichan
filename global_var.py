@@ -1,17 +1,27 @@
 # GLOBAL VARIABLES
-DISCORD_BOT_TOKEN = 'OTM1Njk1MTcwNzk4NzUxNzk0.YfCYCQ.rzL6VP246KLo7AK8AmHVTaMQfU4'
-CMD_DOCUMENTATION_WEBSITE = ''
-DISCORD_BOT_GUILD = ''
+token = 'OTM1Njk1MTcwNzk4NzUxNzk0.YfCYCQ.rzL6VP246KLo7AK8AmHVTaMQfU4'
+cmd_link = ''
 
 # BOT VARIABLES
-bot_command_prefix = '!'
-bot_description = '''
-Usotsuki chan is good at just being herself. For utils, see
-''' + CMD_DOCUMENTATION_WEBSITE + '.'
-
-# misc VARIABLES
-raikohex_id = 0 # Add Number here
+cmd_pre = '!'
+description = ''' '''
 
 # user-toggled VARIABLES
-logging_true = False
-logging_channel = 0 # Add Number here
+is_mod = False
+is_log_msg = False
+is_log_user = False
+
+is_entertainment = False
+
+is_v_chat = False
+
+is_stock = False
+
+is_mail = False
+
+# user-defined VARIABLES
+log_channel = 0 # Add Number here
+
+hello = ''
+introduce = ''
+goodybe = ''

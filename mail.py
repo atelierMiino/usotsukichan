@@ -5,6 +5,8 @@ class mail(commands.Cog):
         self.company = company
         self.tracking_number = tracking_number
         self.user_id = user_id
-
+    # track package
+    # untrack package
+    
 def setup(bot: commands.Bot):
-    bot.add_cog(usomailcommands(bot))
+    bot.add_cog(mail(bot))

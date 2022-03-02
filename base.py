@@ -1,3 +1,5 @@
+# this file is the absolute minimum required 'extension' for bot
+
 from discord.ext import commands
 import random
 
