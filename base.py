@@ -11,6 +11,8 @@ class base(commands.Cog):
     @commands.Cog.listener()
     async def on_ready(self):
         print('Bot: {} is now Online.'.format(self.bot.user))
+        # if bot has not been initialized, DM whoever invited the bot
+
 
     # bot on_disconnect
     @commands.Cog.listener()

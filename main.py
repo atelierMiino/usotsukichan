@@ -16,18 +16,19 @@ bot = commands.Bot(  command_prefix=global_var.cmd_pre,
                         description=global_var.description,
                         intents=bot_intents)
 
+# token will be read from a json in the future to avoid security threats
+token = 'x'
+
 # run with barebones component
 bot.load_extension('base')
-bot.run(global_var.token)
+bot.run(token)
 
 # configure extensions
+if (global_var.is_init == False):
+    # call configuration function, configure
+    global_var.is_init = True;
 
 # moderation
-# toggle message logging
-# toggle user entry / departure logging_true
-# "X commands are <ON/OFF>. Toggle <OFF/ON?"
-# if toggle true & command on, then toggle off, else toggle on
-# if toggle on true, toggle specific commands
 if global_var.is_mod or global_var.is_log_msg or global_var.is_log_user:
     bot.load_extension('mod')
 # entertainment
@@ -43,3 +44,5 @@ if global_var.is_stock:
 if global_var.is_mail:
     bot.load_extension('mail')
 # misc
+if global_var.is_misc:
+    bot.load_extension('misc')

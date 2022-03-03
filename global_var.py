@@ -1,6 +1,5 @@
 # GLOBAL VARIABLES might become a json in the future
 
-token = 'OTM1Njk1MTcwNzk4NzUxNzk0.YfCYCQ.rzL6VP246KLo7AK8AmHVTaMQfU4'
 cmd_link = ''
 
 # BOT VARIABLES
@@ -8,6 +7,8 @@ cmd_pre = '!'
 description = ''' '''
 
 # user-toggled VARIABLES
+is_init = False
+
 is_mod = False
 is_log_msg = False
 is_log_user = False
@@ -19,6 +20,8 @@ is_v_chat = False
 is_stock = False
 
 is_mail = False
+
+is_misc = False
 
 # user-defined VARIABLES
 log_channel = 0
