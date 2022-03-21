@@ -1,16 +1,16 @@
 # monitors packages. Should be used only in a private channel. Make private thread?
 
+# discord dependancy
 from discord.ext import commands
+# mail dependancy
 import shippo
-import json
-from types import SimpleNamespace
-
-import global_var
+# project dependancy
+import obj.tokens
+import obj_public.global_var
 
 class mail(commands.Cog):
 
-    # token will be read from a json in the future to avoid security threats
-    token = 'x'
+    token = obj.tokens.BotToken.get_token('mail')
 
     def __init__(self, bot):
         self.bot = bot

@@ -1,16 +1,17 @@
 # used to track stocks
 
+# discord dependancy
 from discord.ext import commands
+# stock dependancy
 import polygon
-import json
-from types import SimpleNamespace
+# project dependancy
+import obj.tokens
 
 import global_var
 
 class stock(commands.Cog):
 
-    # token will be read from a json in the future to avoid security threats
-    token = 'x'
+    token = obj.tokens.BotToken.get_token('stocks')
 
     def __init__(self, bot):
         self.bot = bot

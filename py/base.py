@@ -1,6 +1,8 @@
 # this file is the absolute minimum required 'extension' for bot
 
+# discord dependancy
 from discord.ext import commands
+# base dependancy
 import random
 
 class base(commands.Cog):

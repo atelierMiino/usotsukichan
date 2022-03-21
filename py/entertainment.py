@@ -101,5 +101,4 @@ class entertainment(commands.Cog):
         await ctx.channel.send(phrase)
 
 def setup(bot: commands.Bot):
-    bot.add_cog(usocommands(bot))
-    bot.add_cog(amychancommands(bot))
+    bot.add_cog(entertainment(bot))
