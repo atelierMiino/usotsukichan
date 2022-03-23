@@ -23,5 +23,9 @@ class ExtenConfig:
     is_stock = False
     is_mail = False
     is_misc = True
+
+class Flags:
     is_box_active = False
     box_channel_id = 0
+    is_dl = False
+    is_muplyr_active = False

@@ -20,13 +20,14 @@ class friend(commands.Cog):
     # bully and tease raikoh
     async def bully_raikoh(self, ctx):
         # listen for raikoh's discord ID
-        raikoh = obj.userIDs.user()
-        if ctx.author.id == raikoh.get_id('raikoh'):
+        raikoh_obj = obj.userIDs.User()
+        raikoh = raikoh_obj.get_id('raikoh')
+        if str(ctx.author.id) == raikoh:
         # 5% chance to reply with bully
             bully_meter = random.randint(0, 19)
             if bully_meter == 19:
                 mean_phrase = [
-                    '{thinking_emoji}'.format('\U0001F914'),
+                    '🤔',
                     'Of course you would say that..',
                     'just like the simulations..',
                     'oh here we go again xd',
@@ -38,7 +39,7 @@ class friend(commands.Cog):
                     '?'
                 ]
                 chaos_meter = random.randint(0, 9)
-                ctx.reply(mean_phrase[chaos_meter])
+                await ctx.reply(mean_phrase[chaos_meter])
 
     # guhhh responder
     async def guhhh(self, ctx):
@@ -54,31 +55,31 @@ class friend(commands.Cog):
                     if c == 'g':
                         state = 1
                 case 1:
-                    if c == 'g':
-                        pass
-                    elif c == 'u':
+                    if c == 'g' or c == 'u':
                         state = 2
                     else:
                         state = 0
                 case 2:
-                    if c == 'u':
-                        pass
-                    elif c == 'h':
+                    if c == 'u' or c == 'h':
                         # if message contains guhhh..., guhhh back
                         await ctx.channel.send('guhhh')
                         return
                     else:
-                        pass
+                        state = 0
 
     # samurai die
-    async def die(self, ctx):
+    async def voice_trigger(self, ctx):
         if ctx.author.id == self.bot.user.id:
             return
-        src = await discord.FFmpegOpusAudio.from_probe('kzdeath.wav')
-        voice_channel = ctx.author.voice.channel
         try:
+            voice_channel = ctx.author.voice.channel
             v_client = await voice_channel.connect(timeout=2)
-            v_client.play(src)
+            if 'die' in ctx.content:
+                v_client.play(discord.FFmpegPCMAudio('voice/misc/kzdeath.wav'))
+            elif 'waow' in ctx.content:
+                chaos_meter = random.randint(0, 2)
+                wow = ['waow', 'waowww', 'woaw']
+                v_client.play(discord.FFmpegPCMAudio('voice/misc/' + wow[chaos_meter] + '.wav'))
             while v_client.is_playing():
                 await asyncio.sleep(1)
             await v_client.disconnect()
@@ -86,20 +87,24 @@ class friend(commands.Cog):
             pass
         except discord.errors.ClientException:
             pass
+        # user who triggered was not in a voice channel, so there is no point
+        except AttributeError:
+            pass
 
     # classic box dog
     async def boxdog(self, ctx):
         if ctx.author.id == self.bot.user.id:
             return
-
         voice_channel = discord.utils.get(ctx.guild.voice_channels, members=[])
         if voice_channel == None:
             return
         try:
             v_client = await voice_channel.connect(timeout=None, reconnect=True)
-            obj_public.global_var.ExtenConfig.box_channel_id = v_client.channel.id
-            obj_public.global_var.ExtenConfig.is_box_active = True
+            obj_public.global_var.Flags.box_channel_id = v_client.channel.id
+            obj_public.global_var.Flags.is_box_active = True
         except AttributeError:
+            pass
+        except discord.errors.ClientException:
             pass
 
     # message events
@@ -107,8 +112,7 @@ class friend(commands.Cog):
     async def on_message(self, ctx):
         await self.bully_raikoh(ctx)
         await self.guhhh(ctx)
-        if 'die' in ctx.content:
-            await self.die(ctx)
+        await self.voice_trigger(ctx)
         if 'box dog' in ctx.content:
             await self.boxdog(ctx)
 
