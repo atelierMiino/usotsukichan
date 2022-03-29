@@ -1,5 +1,0 @@
-py/obj/*
-py/voice/*
-__pycache__/*
-py/__pycache__/*
-py/obj_public/__pycache__/*

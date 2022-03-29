@@ -1,52 +1,50 @@
-# this file is responsible for managing what cogs are loaded
+'''This file is responsible for loading extensions and running the bot.'''
 
-# discord dependencies
+
 import discord
 from discord.ext import commands
-# project files
-import obj_public.global_var
-import obj.tokens
+
+import obj_public.variables
+import obj.private_user_data
 
 # bot instantiation and Intent configuration
 bot_intents = discord.Intents(  messages=True,
+                                message_content=True,
                                 reactions=True,
                                 guilds=True,
                                 members=True,
-                                voice_states=True)
-bot = commands.Bot(  command_prefix=obj_public.global_var.BotDescription.cmd_pre,
-                        description=obj_public.global_var.BotDescription.description,
+                                voice_states=True,
+                                webhooks=True,
+                                typing=True)
+
+bot = commands.Bot(  command_prefix=obj_public.variables.Metadata.cmd_pre,
+                        description=obj_public.variables.Metadata.description,
                         intents=bot_intents)
 
-token_request = obj.tokens.BotToken()
-token = token_request.get_token('discord')
+extensions = {
+    'base' : True,
+    'moderation' : False,
+    'entertainment' : False,
+    'voice' : True,
+    'stocks' : False,
+    'mail' : False,
+    'misc' : True
+}
 
-# run with barebones component
-bot.load_extension('base')
+moderation_levels = {
+    'mod_commands' : False,
+    'log_message' : False,
+    'log_guild_movement' : False
+}
 
-# configure extensions
-if (obj_public.global_var.ExtenConfig.is_init == False):
-    # call configuration function, configure
-    obj_public.global_var.ExtenConfig.is_init = True;
+mod_lvl = moderation_levels.values()
+for lvl in mod_lvl:
+    extensions['moderation'] = extensions['moderation'] or lvl
 
-# moderation
-if  obj_public.global_var.ExtenConfig.is_mod or\
-    obj_public.global_var.ExtenConfig.is_log_msg or\
-    obj_public.global_var.ExtenConfig.is_log_user:
-    bot.load_extension('mod')
-# entertainment
-if obj_public.global_var.ExtenConfig.is_entertainment:
-    bot.load_extension('entertainment')
-# voicechat
-if obj_public.global_var.ExtenConfig.is_v_chat:
-    bot.load_extension('voice')
-# stonks
-if obj_public.global_var.ExtenConfig.is_stock:
-    bot.load_extension('stock')
-# mail
-if obj_public.global_var.ExtenConfig.is_mail:
-    bot.load_extension('mail')
-# misc
-if obj_public.global_var.ExtenConfig.is_misc:
-    bot.load_extension('misc')
+for ext in extensions:
+    if extensions[ext]:
+        bot.load_extension(ext)
+        print('{} has been loaded.\n'.format(ext))
 
+token = obj.private_user_data.Token.discord_token
 bot.run(token)

@@ -1,0 +1,4 @@
+/obj/*
+/obj_public/__pycache__
+__pycache__
+/v_misc/*

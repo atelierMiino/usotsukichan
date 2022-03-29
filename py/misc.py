@@ -1,29 +1,30 @@
-# truly random commands, suggested by friends
+'''Random Functions suggested by friends. Not intended for general
+use.'''
 
-# discord dependancies
+
 import discord
 from discord.ext import commands
-# random dependancy
+
 import random
-# asyncio dependancy
+
 import asyncio
-# project dependancy
-import obj.userIDs
-import obj_public.global_var
+
+import obj.private_user_data
+import obj_public.variables
 
 class friend(commands.Cog):
-
     def __init__(self, bot):
         self.bot = bot
         self._last_member = None
 
-    # bully and tease raikoh
     async def bully_raikoh(self, ctx):
-        # listen for raikoh's discord ID
-        raikoh_obj = obj.userIDs.User()
-        raikoh = raikoh_obj.get_id('raikoh')
+        '''Function suggested by Amy. Objective is to
+        bully and tease a friend, by the name Raikoh at random
+        messages.'''
+
+        raikoh = obj.private_user_data.UserID.raikoh
         if str(ctx.author.id) == raikoh:
-        # 5% chance to reply with bully
+        # 5% chance to bully
             bully_meter = random.randint(0, 19)
             if bully_meter == 19:
                 mean_phrase = [
@@ -41,13 +42,15 @@ class friend(commands.Cog):
                 chaos_meter = random.randint(0, 9)
                 await ctx.reply(mean_phrase[chaos_meter])
 
-    # guhhh responder
     async def guhhh(self, ctx):
-        # if a character is g, continue if g or u
-        # if a character is u, continue if u or h
-        # if at any point a character breaks, return to case g
+        '''Function suggested by Amy.Every time any instance of guh
+        is mentioned, bot will respond back with a guh.'''
+
         if ctx.author.id == self.bot.user.id:
             return
+        # If a character is g, continue if g or u.
+        # If a character is u, continue if u or h.
+        # If at any point a character breaks, return to case g.
         state = 0
         for c in ctx.content:
             match state:
@@ -61,60 +64,92 @@ class friend(commands.Cog):
                         state = 0
                 case 2:
                     if c == 'u' or c == 'h':
-                        # if message contains guhhh..., guhhh back
                         await ctx.channel.send('guhhh')
                         return
                     else:
                         state = 0
 
-    # samurai die
     async def voice_trigger(self, ctx):
+        '''Function suggested by Lexi and Amy respectively. On mention
+        of die, plays Katana Zero in relevant chat, else if waow, plays
+        waow voicelines.'''
+
         if ctx.author.id == self.bot.user.id:
             return
+
+        voice_channel = ctx.author.voice.channel
+        if voice_channel is None:
+            return
+
         try:
-            voice_channel = ctx.author.voice.channel
             v_client = await voice_channel.connect(timeout=2)
+        # On discord.errors.ClientException, bot is already in chat.
+        except discord.errors.ClientException:
+            pass
+        else:
+            # Katana Zero
             if 'die' in ctx.content:
-                v_client.play(discord.FFmpegPCMAudio('voice/misc/kzdeath.wav'))
+                v_client.play(discord.FFmpegPCMAudio('py/voice/misc/kzdeath.mp3'))
+            # Waow
             elif 'waow' in ctx.content:
-                chaos_meter = random.randint(0, 2)
-                wow = ['waow', 'waowww', 'woaw']
-                v_client.play(discord.FFmpegPCMAudio('voice/misc/' + wow[chaos_meter] + '.wav'))
+                wow = ['k_waow', 'ar_waow', 'a_waow', 't_waow', 'l_waow', 'ani_waow', 'e_waow']
+                chaos_meter = random.randint(0, len(wow) - 1)
+                v_client.play(discord.FFmpegPCMAudio('py/voice/misc/waow/' + wow[chaos_meter] + '.mp3'))
             while v_client.is_playing():
                 await asyncio.sleep(1)
             await v_client.disconnect()
-        except asyncio.TimeoutError:
-            pass
-        except discord.errors.ClientException:
-            pass
-        # user who triggered was not in a voice channel, so there is no point
-        except AttributeError:
-            pass
 
-    # classic box dog
     async def boxdog(self, ctx):
+        '''Function idea by Kaitlyn. Mimics boxdog's behavior in
+        voice chats. Will join a server VC and disconnect if someone
+        unfamiliar joins. The only person that is "familiar" would be
+        boxdog herself.'''
+
         if ctx.author.id == self.bot.user.id:
             return
-        voice_channel = discord.utils.get(ctx.guild.voice_channels, members=[])
-        if voice_channel == None:
-            return
-        try:
-            v_client = await voice_channel.connect(timeout=None, reconnect=True)
-            obj_public.global_var.Flags.box_channel_id = v_client.channel.id
-            obj_public.global_var.Flags.is_box_active = True
-        except AttributeError:
-            pass
-        except discord.errors.ClientException:
-            pass
 
+        # Sit in an empty voice channel.
+        if 'box dog' in ctx.content:
+            voice_channel = discord.utils.get(ctx.guild.voice_channels, members=[])
+            if voice_channel == None:
+                return
+            try:
+                v_client = await voice_channel.connect(timeout=None, reconnect=True)
+                obj_public.variables.Flags.box_channel_id = v_client.channel.id
+                obj_public.variables.Flags.is_box_active = True
+            except AttributeError:
+                pass
+            except discord.errors.ClientException:
+                pass
+
+    @commands.Cog.listener()
+    async def on_voice_state_update(self, member, before, after):
+        '''Meant to work in conjunction with boxdog(). If boxdog flag is set,
+        then that means boxdog is in a channel. Thus, boxdog needs to look out
+        for people joining voice chats in server.'''
+
+        box_dog = obj.private_user_data.UserID.boxdog
+        box_flag = obj_public.variables.Flags.is_box_active
+        member_id = member.id
+        bot_id = self.bot.user.id
+
+        if box_flag and member_id != bot_id and str(member_id) != box_dog:
+            if after.channel.id == obj_public.variables.Flags.box_channel_id:
+                for vc in self.bot.voice_clients:
+                    if vc.channel.id == obj_public.variables.Flags.box_channel_id:
+                        await vc.disconnect()
+                        obj_public.variables.Flags.box_channel_id = 0
+                        obj_public.variables.Flags.is_box_active = False
+                        
     # message events
     @commands.Cog.listener()
     async def on_message(self, ctx):
+        '''On each message, run these function checks.'''
+
         await self.bully_raikoh(ctx)
         await self.guhhh(ctx)
         await self.voice_trigger(ctx)
-        if 'box dog' in ctx.content:
-            await self.boxdog(ctx)
+        await self.boxdog(ctx)
 
 def setup(bot: commands.Bot):
     bot.add_cog(friend(bot))

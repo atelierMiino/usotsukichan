@@ -2,10 +2,6 @@
 
 # discord dependancy
 from discord.ext import commands
-# os dependancy
-import shutil
-# base dependancy
-import random
 
 class base(commands.Cog):
     def __init__(self, bot):
@@ -13,17 +9,8 @@ class base(commands.Cog):
 
     # bot on_ready
     @commands.Cog.listener()
-    async def on_ready(self):
-        # make sure all connections are cleanly disconnected
-        for v_client in self.bot.voice_clients:
-            await v_client.disconnect()
-        try:
-            shutil.rmtree('voice/music')
-        except FileNotFoundError:
-            pass
+    async def on_connect(self):
         print('Bot: {} is now Online.'.format(self.bot.user))
-        # if bot has not been initialized, DM whoever invited the bot
-
 
     # bot on_disconnect
     @commands.Cog.listener()
