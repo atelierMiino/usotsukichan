@@ -18,7 +18,7 @@ bot_intents = discord.Intents(  messages=True,
                                 typing=True)
 
 bot = commands.Bot(  command_prefix=obj_public.variables.Metadata.cmd_pre,
-                        description=obj_public.variables.Metadata.description,
+                        description=obj_public.variables.Phrase.description,
                         intents=bot_intents)
 
 extensions = {
