@@ -77,11 +77,13 @@ class friend(commands.Cog):
         if ctx.author.id == self.bot.user.id:
             return
 
-        voice_channel = ctx.author.voice.channel
-        if voice_channel is None:
+        try:
+            voice_channel = ctx.author.voice.channel
+        except AttributeError:
             return
         
         else:
+            v_client = None
             # Katana Zero
             if 'die' in ctx.content:
                 try:
@@ -89,7 +91,7 @@ class friend(commands.Cog):
                     # On discord.errors.ClientException, bot is already in chat.
                 except discord.errors.ClientException:
                     pass
-                v_client.play(discord.FFmpegPCMAudio('py/voice/misc/kzdeath.mp3'))
+                v_client.play(discord.FFmpegPCMAudio('py/v_misc/kzdeath.mp3'))
             # Waow
             elif 'waow' in ctx.content:
                 try:
@@ -99,7 +101,7 @@ class friend(commands.Cog):
                     pass
                 wow = ['k_waow', 'ar_waow', 'a_waow', 't_waow', 'l_waow', 'ani_waow', 'e_waow']
                 chaos_meter = random.randint(0, len(wow) - 1)
-                v_client.play(discord.FFmpegPCMAudio('py/voice/misc/waow/' + wow[chaos_meter] + '.mp3'))
+                v_client.play(discord.FFmpegPCMAudio('py/v_misc/waow/' + wow[chaos_meter] + '.mp3'))
             while v_client.is_playing():
                 await asyncio.sleep(1)
             await v_client.disconnect()
