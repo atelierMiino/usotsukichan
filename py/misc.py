@@ -102,9 +102,12 @@ class friend(commands.Cog):
                 wow = ['k_waow', 'ar_waow', 'a_waow', 't_waow', 'l_waow', 'ani_waow', 'e_waow']
                 chaos_meter = random.randint(0, len(wow) - 1)
                 v_client.play(discord.FFmpegPCMAudio('py/v_misc/waow/' + wow[chaos_meter] + '.mp3'))
-            while v_client.is_playing():
-                await asyncio.sleep(1)
-            await v_client.disconnect()
+            try:
+                while v_client.is_playing():
+                    await asyncio.sleep(1)
+                await v_client.disconnect()
+            except AttributeError:
+                pass
 
     async def boxdog(self, ctx):
         '''Function idea by Kaitlyn. Mimics boxdog's behavior in
