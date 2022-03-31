@@ -80,18 +80,23 @@ class friend(commands.Cog):
         voice_channel = ctx.author.voice.channel
         if voice_channel is None:
             return
-
-        try:
-            v_client = await voice_channel.connect(timeout=2)
-        # On discord.errors.ClientException, bot is already in chat.
-        except discord.errors.ClientException:
-            pass
+        
         else:
             # Katana Zero
             if 'die' in ctx.content:
+                try:
+                    v_client = await voice_channel.connect(timeout=2)
+                    # On discord.errors.ClientException, bot is already in chat.
+                except discord.errors.ClientException:
+                    pass
                 v_client.play(discord.FFmpegPCMAudio('py/voice/misc/kzdeath.mp3'))
             # Waow
             elif 'waow' in ctx.content:
+                try:
+                    v_client = await voice_channel.connect(timeout=2)
+                    # On discord.errors.ClientException, bot is already in chat.
+                except discord.errors.ClientException:
+                    pass
                 wow = ['k_waow', 'ar_waow', 'a_waow', 't_waow', 'l_waow', 'ani_waow', 'e_waow']
                 chaos_meter = random.randint(0, len(wow) - 1)
                 v_client.play(discord.FFmpegPCMAudio('py/voice/misc/waow/' + wow[chaos_meter] + '.mp3'))
