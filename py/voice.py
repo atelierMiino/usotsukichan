@@ -1,26 +1,20 @@
 '''Voicechat commands, mainly used to play music or sounds.'''
 
 
+import discord
+import discord.ui.view
+from discord.ext import commands
 import asyncio
 import functools
 import itertools
 import math
-
-import discord
-import discord.ui.view
-from discord.ext import commands
 import youtube_dl
 from async_timeout import timeout
+from exceptions import YTDLError
+from exceptions import VoiceError
 
 # Silence useless bug reports messages
 youtube_dl.utils.bug_reports_message = lambda:''
-
-class VoiceError(Exception):
-    pass
-
-
-class YTDLError(Exception):
-    pass
 
 
 class YTDL(discord.PCMVolumeTransformer):
@@ -47,7 +41,7 @@ class YTDL(discord.PCMVolumeTransformer):
 
     ytdl = youtube_dl.YoutubeDL(YTDL_opt)
 
-    def __init__(self, ctx:commands.Context, src:discord.FFmpegPCMAudio, *, data:dict, volume:float = 0.5):
+    def __init__(self, ctx : commands.Context, src : discord.FFmpegPCMAudio, *, data : dict, volume : float = 0.5):
         super().__init__(src, volume)
 
         self.requester = ctx.author
@@ -66,7 +60,7 @@ class YTDL(discord.PCMVolumeTransformer):
         return '**{0.title}** by **{0.uploader}**'.format(self)
 
     @classmethod
-    async def init_src(cls, ctx:commands.Context, keywords:str, *, loop:asyncio.BaseEventLoop = None):
+    async def init_src(cls, ctx : commands.Context, keywords : str, *, loop : asyncio.BaseEventLoop = None):
         '''Converts keywords to PCM Audio streams.'''
 
         loop = loop or asyncio.get_event_loop()
@@ -113,7 +107,7 @@ class YTDL(discord.PCMVolumeTransformer):
         return cls(ctx, discord.FFmpegPCMAudio(info['url'], **cls.FFMPEG_opt), data=info)
 
     @staticmethod
-    def parse_duration(dur:int):
+    def parse_duration(dur : int):
         '''Converts integer seconds into human-readable d/h/m/s string format.'''
 
         if dur > 0:
@@ -173,12 +167,12 @@ class SoundQueue(asyncio.Queue):
     def clear(self):
         self._queue.clear()
 
-    def remove(self, index:int):
+    def remove(self, index : int):
         del self._queue[index]
 
 
 class VoiceView(discord.ui.view.View):
-    def __init__(self, ctx:commands.Context):
+    def __init__(self, ctx : commands.Context):
         super().__init__(timeout=180)
         self._ctx = ctx
         self._style = discord.ButtonStyle.blurple
@@ -188,13 +182,13 @@ class VoiceView(discord.ui.view.View):
         return self._style
 
     @style.setter
-    def style(self, value:discord.ButtonStyle):
+    def style(self, value : discord.ButtonStyle):
         self._style = value
 
     async def on_timeout(self):
         self.stop()
 
-    @discord.ui.button(style=style, emoji='⏯')
+    @discord.ui.button(style = style, emoji = '⏯')
     async def play_pause(self, button:discord.ui.Button, interaction:discord.Interaction):
         '''Toggle play / pause'''
 
@@ -203,20 +197,20 @@ class VoiceView(discord.ui.view.View):
         else:
             self._ctx.voice_state.voice.resume()
     
-    @discord.ui.button(style=style, emoji='⏭')
+    @discord.ui.button(style = style, emoji = '⏭')
     async def skip(self, button:discord.ui.Button, interaction:discord.Interaction):
         '''Call the skip function in VoiceCMD'''
 
         self._skip(self.ctx)
         self.disabled = True
 
-    @discord.ui.button(style=style, emoji='🔁')
+    @discord.ui.button(style = style, emoji = '🔁')
     async def loop(self, button:discord.ui.Button, interaction:discord.Interaction):
         '''Call the loop function in VoiceCMD'''
 
         self._loop(self.ctx)
         
-    @discord.ui.button(style=style, emoji='⏹')
+    @discord.ui.button(style = style, emoji = '⏹')
     async def stop(self, button:discord.ui.Button, interaction:discord.Interaction):
         '''Clear the view items, then call the stop function in VoiceCMD.
         Once done, disable all buttons in VoiceView'''
@@ -227,7 +221,7 @@ class VoiceView(discord.ui.view.View):
 
 
 class VoiceState:
-    def __init__(self, bot:commands.Bot, ctx:commands.Context):
+    def __init__(self, bot : commands.Bot, ctx : commands.Context):
         self.bot = bot
         self._ctx = ctx
 
@@ -252,7 +246,7 @@ class VoiceState:
         return self._loop
 
     @loop.setter
-    def loop(self, value:bool):
+    def loop(self, value : bool):
         self._loop = value
 
     @property
@@ -260,7 +254,7 @@ class VoiceState:
         return self._volume
 
     @volume.setter
-    def volume(self, value:float):
+    def volume(self, value : float):
         self._volume = value
 
     @property
@@ -295,7 +289,7 @@ class VoiceState:
             
             await self.next.wait()
 
-    def play_next_song(self, error=None):
+    def play_next_song(self, error = None):
         if error:
             raise VoiceError(str(error))
 
@@ -316,11 +310,11 @@ class VoiceState:
 
 
 class VoiceCMD(commands.Cog):
-    def __init__(self, bot:commands.Bot):
+    def __init__(self, bot : commands.Bot):
         self.bot = bot
         self.voice_states = {}
 
-    def get_voice_state(self, ctx:commands.Context):
+    def get_voice_state(self, ctx : commands.Context):
         '''Returns VoiceState instance that is associated with guild.'''
 
         # If no VoiceState instances are associated with guild, initialize
@@ -336,20 +330,20 @@ class VoiceCMD(commands.Cog):
         for state in self.voice_states.values():
             self.bot.loop.create_task(state.stop())
 
-    def cog_check(self, ctx:commands.Context):
+    def cog_check(self, ctx : commands.Context):
         if not ctx.guild:
             raise commands.NoPrivateMessage('This command can\'t be used in DM channels.')
 
         return True
 
-    async def cog_before_invoke(self, ctx:commands.Context):
+    async def cog_before_invoke(self, ctx : commands.Context):
         ctx.voice_state = self.get_voice_state(ctx)
 
-    async def cog_command_error(self, ctx:commands.Context, error:commands.CommandError):
+    async def cog_command_error(self, ctx : commands.Context, error:commands.CommandError):
         await ctx.send('An error occurred:{}'.format(str(error)))
 
     @commands.command(name='join', invoke_without_subcommand=True)
-    async def _join(self, ctx:commands.Context):
+    async def _join(self, ctx : commands.Context):
         '''If not in voice channel, join voice channel
         associated with command user.'''
 
@@ -361,7 +355,7 @@ class VoiceCMD(commands.Cog):
         ctx.voice_state.voice = await destination.connect()
 
     @commands.command(name='leave', aliases=['disconnect'])
-    async def _leave(self, ctx:commands.Context):
+    async def _leave(self, ctx : commands.Context):
         '''Dismiss queue and exits.'''
 
         if not ctx.voice_state.voice:
@@ -371,7 +365,7 @@ class VoiceCMD(commands.Cog):
         del self.voice_states[ctx.guild.id]
 
     @commands.command(name='pause', aliases=['pa'])
-    async def _pause(self, ctx:commands.Context):
+    async def _pause(self, ctx : commands.Context):
         '''Pauses voice output.'''
 
         if ctx.voice_state.is_playing and ctx.voice_state.voice.is_playing():
@@ -379,7 +373,7 @@ class VoiceCMD(commands.Cog):
             await ctx.message.add_reaction('✅')
 
     @commands.command(name='resume', aliases=['re', 'res'])
-    async def _resume(self, ctx:commands.Context):
+    async def _resume(self, ctx : commands.Context):
         '''Resumes voice output.'''
 
         if ctx.voice_state.is_playing and ctx.voice_state.voice.is_paused():
@@ -387,7 +381,7 @@ class VoiceCMD(commands.Cog):
             await ctx.message.add_reaction('✅')
 
     @commands.command(name='stop')
-    async def _stop(self, ctx:commands.Context):
+    async def _stop(self, ctx : commands.Context):
         '''Dismiss queue.'''
 
         ctx.voice_state.sounds.clear()
@@ -397,7 +391,7 @@ class VoiceCMD(commands.Cog):
             await ctx.message.add_reaction('✅')
 
     @commands.command(name='skip', aliases=['s'])
-    async def _skip(self, ctx:commands.Context):
+    async def _skip(self, ctx : commands.Context):
         '''Skip current voice output'''
 
         if not ctx.voice_state.is_playing:
@@ -407,7 +401,7 @@ class VoiceCMD(commands.Cog):
         await ctx.message.add_reaction('✅')
 
     @commands.command(name='queue')
-    async def _queue(self, ctx:commands.Context, *, page:int = 1):
+    async def _queue(self, ctx : commands.Context, *, page : int = 1):
         '''Shows registered items.'''
 
         if len(ctx.voice_state.sounds) == 0:
@@ -428,7 +422,7 @@ class VoiceCMD(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command(name='loop')
-    async def _loop(self, ctx:commands.Context):
+    async def _loop(self, ctx : commands.Context):
         '''Loops current Sound instance.'''
 
         if not ctx.voice_state.is_playing:
@@ -440,7 +434,7 @@ class VoiceCMD(commands.Cog):
         await ctx.send('Looping a song is now turned ' + ('on' if ctx.voice_state.loop else 'off') )
 
     @commands.command(name='play', aliases=['p'])
-    async def _play(self, ctx:commands.Context, *, search:str):
+    async def _play(self, ctx : commands.Context, *, search : str):
         '''Registers Sounds onto the queue.
         youtube_dl compatible sites: https://rg3.github.io/youtube-dl/supportedsites.html
         '''
@@ -460,7 +454,7 @@ class VoiceCMD(commands.Cog):
             
     @_join.before_invoke
     @_play.before_invoke
-    async def ensure_voice_state(self, ctx:commands.Context):
+    async def ensure_voice_state(self, ctx : commands.Context):
         if not ctx.author.voice or not ctx.author.voice.channel:
             raise commands.CommandError('You are not connected to any voice channel.')
 
@@ -469,5 +463,5 @@ class VoiceCMD(commands.Cog):
                 raise commands.CommandError('Bot is already in a voice channel.')
 
 
-def setup(bot:commands.Bot):
+def setup(bot : commands.Bot):
     bot.add_cog(VoiceCMD(bot))

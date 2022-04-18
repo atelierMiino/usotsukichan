@@ -79,29 +79,58 @@ class friend(commands.Cog):
 
         try:
             voice_channel = ctx.author.voice.channel
+        # Except catches when author is not in channel
         except AttributeError:
             return
         
         else:
             v_client = None
+            v_list = ['die', 'waow', 'hello', 'box eulogy']
+
+            for word in v_list:
+                if word in ctx.content:
+                    break
+                elif word == v_list[-1]:
+                    return
+
             # Katana Zero
-            if 'die' in ctx.content:
+            if v_list[0] in ctx.content:
                 try:
                     v_client = await voice_channel.connect(timeout=2)
-                    # On discord.errors.ClientException, bot is already in chat.
+                # Except catches when bot is already in v chat
                 except discord.errors.ClientException:
                     pass
-                v_client.play(discord.FFmpegPCMAudio('py/v_misc/kzdeath.mp3'))
+
+                v_client.play(discord.FFmpegPCMAudio('py/v_misc/kz_death.mp3'))
+
             # Waow
-            elif 'waow' in ctx.content:
+            elif v_list[1] in ctx.content:
                 try:
                     v_client = await voice_channel.connect(timeout=2)
-                    # On discord.errors.ClientException, bot is already in chat.
                 except discord.errors.ClientException:
                     pass
+
                 wow = ['k_waow', 'ar_waow', 'a_waow', 't_waow', 'l_waow', 'ani_waow', 'e_waow']
                 chaos_meter = random.randint(0, len(wow) - 1)
                 v_client.play(discord.FFmpegPCMAudio('py/v_misc/waow/' + wow[chaos_meter] + '.mp3'))
+
+            # Hello
+            elif v_list[2] in ctx.content:
+                try:
+                    v_client = await voice_channel.connect(timeout=2)
+                except discord.errors.ClientException:
+                    pass
+
+                v_client.play(discord.FFmpegPCMAudio('py/v_misc/hi_hello.m4a'))
+
+            # Box eulogy
+            elif v_list[3] in ctx.content:
+                try:
+                    v_client = await voice_channel.connect(timeout=2)
+                except discord.errors.ClientException:
+                    pass
+
+                v_client.play(discord.FFmpegPCMAudio('py/v_misc/box_eulogy.mp3'))
             try:
                 while v_client.is_playing():
                     await asyncio.sleep(1)
@@ -150,6 +179,11 @@ class friend(commands.Cog):
                         await vc.disconnect()
                         obj_public.variables.Flags.box_channel_id = 0
                         obj_public.variables.Flags.is_box_active = False
+
+        # If box dog leaves chat for some reass
+        elif box_flag and member_id == bot_id and after.channel is None:
+            obj_public.variables.Flags.box_channel_id = 0
+            obj_public.variables.Flags.is_box_active = False
                         
     # message events
     @commands.Cog.listener()

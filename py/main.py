@@ -27,7 +27,7 @@ extensions = {
     'entertainment' : False,
     'voice' : True,
     'stocks' : False,
-    'mail' : False,
+    'mail' : True,
     'misc' : True
 }
 
